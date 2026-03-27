@@ -3,6 +3,7 @@ import appLogo from './assets/logo.svg'
 import TransactionForm from './components/TransactionForm.tsx'
 import TransactionsList from './components/TransactionsList.tsx'
 import StatsCards from './components/StatsCards.tsx'
+import clsx from 'clsx'
 
 function App() {
     const [open, setOpen] = useState(false);
@@ -14,21 +15,27 @@ function App() {
                     <a className="hero">
                         <img src={appLogo} className="logo" alt="Logo"/>
                     </a>
-                    <nav className={`${open ? "flex" : "hidden"}  md:flex items-center bg-black/50 md:bg-transparent fixed md:static top-0 left-0 z-50 w-full max-h-screen h-full md:h-auto `}
-                         onClick={() => setOpen(false)}
+                    <nav
+                        className={clsx(open ? "flex" : "hidden", " md:flex items-center bg-black/50 md:bg-transparent fixed md:static top-0 left-0 z-50 w-full max-h-screen h-full md:h-auto")}
+                        onClick={() => setOpen(false)}
                     >
                         <ul className="header-menu flex gap-6 md:gap-2 flex-col md:flex-row md:items-center text-slate-600 bg-white w-[300px] md:w-full h-full p-8 md:p-0 md:justify-end "
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <li className="header-menu-item current"><a href="#" className="p-2 font-medium header-menu-link">Overview</a>
+                            <li className="header-menu-item current"><a href="#"
+                                                                        className="p-2 font-medium header-menu-link">Overview</a>
                             </li>
-                            <li className="header-menu-item"><a href="#" className="p-2 font-medium header-menu-link">Transactions</a>
+                            <li className="header-menu-item"><a href="#"
+                                                                className="p-2 font-medium header-menu-link">Transactions</a>
                             </li>
-                            <li className="header-menu-item"><a href="#" className="p-2 font-medium header-menu-link">Analytics</a>
+                            <li className="header-menu-item"><a href="#"
+                                                                className="p-2 font-medium header-menu-link">Analytics</a>
                             </li>
-                            <li className="header-menu-item"><a href="#" className="p-2 font-medium header-menu-link">Accounts</a>
+                            <li className="header-menu-item"><a href="#"
+                                                                className="p-2 font-medium header-menu-link">Accounts</a>
                             </li>
-                            <li className="header-menu-item"><a href="#" className="p-2 font-medium header-menu-link">Wallet</a>
+                            <li className="header-menu-item"><a href="#"
+                                                                className="p-2 font-medium header-menu-link">Wallet</a>
                             </li>
                         </ul>
                     </nav>
