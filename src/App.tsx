@@ -2,39 +2,35 @@ import TransactionForm from './components/TransactionForm.tsx'
 import TransactionsList from './components/TransactionsList.tsx'
 import StatsCards from './components/StatsCards.tsx'
 import Header from "./components/Header.tsx";
-import {useState} from 'react'
+import {getWeather} from './services/weatherService'
+import useTransactions from './hooks/useTransactions.ts'
+
+import {useState, useEffect} from 'react'
 
 function App() {
-    const [transactions, setTransactions] = useState([]);
+    const [weather, setWeather] = useState();
+    const {transactions, deleteItem, addItem} = useTransactions()
 
-    function deleteItem(id) {
-        return setTransactions(transactions.filter(item => item.id !== id))
-
-    }
+    useEffect(() => {
+        getWeather()
+            .then(forecast => {
+                setWeather(forecast)
+                //console.log(forecast)
+            })
+    }, []);
 
     return (
         <>
-            <Header/>
+            <Header weather={weather}/>
 
             <StatsCards/>
 
             <section id="transaction" className="transaction px-4 mb-4">
                 <div className="container mx-auto grid gap-8 xl:grid-cols-[1fr_2fr] grid-cols-1  justify-between ">
-                    <TransactionForm onSubmit={(values) => {
-                        setTransactions([
-                            ...transactions,
-                            {
-                                ...values,
-                                date: new Date(),
-                                id: Date.now()
-                            }
-                        ])
-                    }}/>
+                    <TransactionForm onSubmit={addItem}/>
                     <TransactionsList transactions={transactions} onDelete={deleteItem}/>
                 </div>
             </section>
-
-
         </>
     )
 }

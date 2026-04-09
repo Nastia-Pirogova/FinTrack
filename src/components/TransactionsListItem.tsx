@@ -1,3 +1,5 @@
+import Button from './Button.tsx'
+
 function TransactionsListItem({item, onDelete}) {
     return (
         <>
@@ -7,7 +9,7 @@ function TransactionsListItem({item, onDelete}) {
                 <td className="px-8 py-5">{item?.date ? new Date(item.date).toLocaleDateString() : 'N/A'}</td>
                 <td className="px-8 py-5 font-medium">${item?.amount}</td>
                 <td className="px-8 py-5 text-gray-400 text-xl" >
-                    <button className="text-xl font-normal p-2" onClick={onDelete}>Delete</button>
+                    <Button onClick={onDelete} />
                 </td>
             </tr>
         </>
