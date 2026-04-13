@@ -5,7 +5,10 @@ import Header from "./components/Header.tsx";
 import {getWeather} from './services/weatherService'
 import useTransactions from './hooks/useTransactions.ts'
 
+
 import {useState, useEffect} from 'react'
+import Footer from "./components/Footer.tsx";
+
 
 function App() {
     const [weather, setWeather] = useState();
@@ -22,15 +25,17 @@ function App() {
     return (
         <>
             <Header weather={weather}/>
+            <main>
+                <StatsCards/>
 
-            <StatsCards/>
-
-            <section id="transaction" className="transaction px-4 mb-4">
-                <div className="container mx-auto grid gap-8 xl:grid-cols-[1fr_2fr] grid-cols-1  justify-between ">
-                    <TransactionForm onSubmit={addItem}/>
-                    <TransactionsList transactions={transactions} onDelete={deleteItem}/>
-                </div>
-            </section>
+                <section id="transaction" className="transaction px-4 mb-4">
+                    <div className="container mx-auto grid gap-8 xl:grid-cols-[1fr_2fr] grid-cols-1  justify-between ">
+                        <TransactionForm onSubmit={addItem}/>
+                        <TransactionsList transactions={transactions} onDelete={deleteItem}/>
+                    </div>
+                </section>
+            </main>
+            <Footer/>
         </>
     )
 }

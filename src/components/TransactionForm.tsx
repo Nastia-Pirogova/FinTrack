@@ -43,7 +43,7 @@ function TransactionForm({ onSubmit }) {
                             className="w-full rounded-2xl border border-gray-200 bg-slate-100 px-5 py-4 md:text-xl outline-none max-h-[200px]"></textarea>
                     </div>
 
-                    <ButtonSubmit onClick={() => onSubmit({title, amount, description})} />
+                    <ButtonSubmit  title='Save Transaction' id="submit" onClick={() => onSubmit({title, amount, description})} />
 
                 </form>
 
