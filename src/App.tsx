@@ -4,8 +4,6 @@ import StatsCards from './components/StatsCards.tsx'
 import Header from "./components/Header.tsx";
 import {getWeather} from './services/weatherService'
 import useTransactions from './hooks/useTransactions.ts'
-
-
 import {useState, useEffect} from 'react'
 import Footer from "./components/Footer.tsx";
 

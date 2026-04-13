@@ -1,4 +1,4 @@
-export default function Input({inputType, value, label, id, name}) {
+export default function Input({inputType, value, label, id, name, onChange, register}) {
 
     return (
         <>
@@ -8,8 +8,7 @@ export default function Input({inputType, value, label, id, name}) {
                     id={id}
                     type={inputType}
                     name={name}
-                    // value={value}
-                    onChange={(e) => console.log(e.target.value)}
+                    {...(register ? register(name) : {})}
                     className="h-10 md:h-16 w-full rounded-2xl border border-gray-200 bg-slate-100 px-5 md:text-xl outline-none"/>
             </div>
 

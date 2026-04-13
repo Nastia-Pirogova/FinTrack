@@ -4,8 +4,7 @@ import Footer from "../components/Footer.tsx";
 import ButtonSubmit from "../components/ButtonSubmit.tsx";
 // import {useState} from "react";
 
-export default function Signin({weather, onClick }) {
-
+export default function Signin({weather }) {
 
     return (
         <>
@@ -30,7 +29,7 @@ export default function Signin({weather, onClick }) {
                                 label="Password"
                                 // value=""
                             />
-                            <ButtonSubmit title="Sign In" id="signin" onClick={onClick}/>
+                            <ButtonSubmit title="Sign In" id="signin" type="submit"/>
                         </form>
                     </div>
                 </section>
