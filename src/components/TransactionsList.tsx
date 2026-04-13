@@ -1,6 +1,7 @@
 import TransactionsListItem from './TransactionsListItem.tsx'
 
-function TransactionsList() {
+function TransactionsList({transactions, onDelete}) {
+
     return (
         <>
             <div className="border border-gray-200 bg-white shadow-xs rounded-xl">
@@ -29,7 +30,9 @@ function TransactionsList() {
 
                         <tbody className="text-lg text-slate-700">
 
-                        <TransactionsListItem/>
+                        {transactions.map((item ) => (
+                            <TransactionsListItem key={item.id} item={item} onDelete={() => onDelete(item.id)}/>
+                        ))}
 
                         </tbody>
                     </table>
