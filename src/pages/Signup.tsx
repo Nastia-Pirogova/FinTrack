@@ -2,10 +2,31 @@ import Input from "../components/Input.tsx";
 import Header from "../components/Header.tsx";
 import Footer from "../components/Footer.tsx";
 import ButtonSubmit from "../components/ButtonSubmit.tsx";
-// import {useState} from "react";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useForm} from "react-hook-form";
 
-export default function Signup({weather, onClick }) {
+const signupSchema = z.object({
+    name: z.string().min(2, "Enter a name"),
+    email: z.email({ pattern: z.regexes.html5Email }),
+    password: z.string().min(8, "Invalid password, minimum 8 characters"),
+});
 
+export default function Signup({weather, onClick, onSubmit }) {
+
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        reset
+    } = useForm({
+        resolver: zodResolver(signupSchema),
+    });
+
+    const onSubmitForm = (data) => {
+        onSubmit(data);
+        reset();
+    };
 
     return (
         <>
@@ -15,29 +36,35 @@ export default function Signup({weather, onClick }) {
                     <div className="border border-gray-200 mx-auto bg-white p-6 shadow-xs rounded-xl container max-w-[800px]">
                         <h1 className="mb-4 md:mb-8 text-3xl font-bold text-center text-slate-700">Sign Up</h1>
 
-                        <form className="form">
+                        <form className="form" onSubmit={handleSubmit(onSubmitForm)}>
                             <Input
                                 id="name"
                                 inputType="text"
                                 name="name"
                                 label="Name"
-                                // value=""
+                                register={register}
+                                className={errors.name ? "border-red-500" : ''}
                             />
+                            {errors.name && <p className="error-input absolute">{errors.name.message}</p>}
                             <Input
                                 id="email"
                                 inputType="email"
                                 name="email"
                                 label="Email"
-                                // value=""
+                                register={register}
+                                className={errors.email ? "border-red-500" : ''}
                             />
+                            {errors.email && <p className="error-input absolute">{errors.email.message}</p>}
                             <Input
                                 id="password"
                                 inputType="password"
                                 name="password"
                                 label="Password"
-                                // value=""
+                                register={register}
+                                className={errors.password ? "border-red-500" : ''}
                             />
-                            <ButtonSubmit title="Sign In" id="signin" onClick={onClick}/>
+                            {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
+                            <ButtonSubmit title="Sign In" id="signin" onClick={onClick} className={'mt-3.5'}/>
                         </form>
                     </div>
                 </section>

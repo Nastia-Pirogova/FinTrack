@@ -2,14 +2,35 @@ import {useState} from 'react'
 import ButtonSubmit from "./ButtonSubmit.tsx";
 import Input from "./Input.tsx";
 import {useForm} from "react-hook-form"
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import clsx from "clsx";
+
+
+const transactionSchema = z.object({
+    title: z.string().min(1, "Enter a title"),
+    amount: z.coerce.number().positive("Amount must be greater than 0"),
+    description: z.string().min(3, "Minimum 3 characters"),
+});
 
 function TransactionForm({onSubmit}) {
-    const { register, handleSubmit, reset } = useForm();
+    // const { register, handleSubmit, reset } = useForm();
+
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        reset
+    } = useForm({
+        resolver: zodResolver(transactionSchema),
+    });
+
 
     const onSubmitForm = (data) => {
         onSubmit(data);
         reset();
     };
+
 
     return (
 
@@ -23,17 +44,19 @@ function TransactionForm({onSubmit}) {
                         inputType="title"
                         name="title"
                         label="Title"
+                        className={errors.title ? "border-red-500" : '' }
                         register={register}
                     />
-
+                    {errors.title && <p className="error-input absolute">{errors.title.message}</p>}
                     <Input
                         id="amount"
                         inputType="number"
                         name="amount"
                         label="Amount"
+                        className={errors.amount ? "border-red-500" : '' }
                         register={register}
                     />
-
+                    {errors.amount && <p className="error-input absolute">{errors.amount.message}</p>}
 
                     <div className="form-inner mb-4">
                         <label htmlFor="description"
@@ -41,8 +64,10 @@ function TransactionForm({onSubmit}) {
                         <textarea
                             id="description"
                             {...register("description")}
-                            className="w-full rounded-2xl border border-gray-200 bg-slate-100 px-5 py-4 md:text-xl outline-none max-h-[200px]"></textarea>
+                            className={clsx(errors.description ? "border-red-500" : '', 'w-full rounded-2xl border border-gray-200 bg-slate-100 px-5 py-4 md:text-xl outline-none max-h-[200px]')}
+                        ></textarea>
                     </div>
+                    {errors.description && <p className="error-input error-input-textarea absolute">{errors.description.message}</p>}
 
                     <ButtonSubmit title='Save Transaction' id="submit" type="submit"/>
 

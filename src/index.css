@@ -11,3 +11,13 @@ a, button {
 main {
     flex: 1;
 }
+
+.error-input {
+    margin-top: -15px;
+    font-size: 12px;
+    color: #ff2037;
+}
+
+.error-input-textarea {
+    margin-top: -20px;
+}
