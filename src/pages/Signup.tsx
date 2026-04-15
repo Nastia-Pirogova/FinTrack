@@ -5,15 +5,16 @@ import ButtonSubmit from "../components/ButtonSubmit.tsx";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
+import useWeather from "../hooks/useWeather.tsx";
 
 const signupSchema = z.object({
     name: z.string().min(2, "Enter a name"),
-    email: z.email({ pattern: z.regexes.html5Email }),
+    email: z.email({pattern: z.regexes.html5Email}),
     password: z.string().min(8, "Invalid password, minimum 8 characters"),
 });
 
-export default function Signup({weather, onClick, onSubmit }) {
-
+export default function Signup({onClick}) {
+    const {weather} = useWeather();
     const {
         register,
         handleSubmit,
@@ -24,7 +25,7 @@ export default function Signup({weather, onClick, onSubmit }) {
     });
 
     const onSubmitForm = (data) => {
-        onSubmit(data);
+        console.log("signup data:", data);
         reset();
     };
 
@@ -33,7 +34,8 @@ export default function Signup({weather, onClick, onSubmit }) {
             <Header weather={weather}/>
             <main>
                 <section className="signin px-4 mt-20 mb-6">
-                    <div className="border border-gray-200 mx-auto bg-white p-6 shadow-xs rounded-xl container max-w-[800px]">
+                    <div
+                        className="border border-gray-200 mx-auto bg-white p-6 shadow-xs rounded-xl container max-w-[800px]">
                         <h1 className="mb-4 md:mb-8 text-3xl font-bold text-center text-slate-700">Sign Up</h1>
 
                         <form className="form" onSubmit={handleSubmit(onSubmitForm)}>

@@ -2,23 +2,14 @@ import TransactionForm from './components/TransactionForm.tsx'
 import TransactionsList from './components/TransactionsList.tsx'
 import StatsCards from './components/StatsCards.tsx'
 import Header from "./components/Header.tsx";
-import {getWeather} from './services/weatherService'
-import useTransactions from './hooks/useTransactions.ts'
-import {useState, useEffect} from 'react'
+import useWeather from './hooks/useWeather.tsx'
+import useTransactions from './hooks/useTransactions.tsx'
 import Footer from "./components/Footer.tsx";
 
 
 function App() {
-    const [weather, setWeather] = useState();
+    const {weather} = useWeather();
     const {transactions, deleteItem, addItem} = useTransactions()
-
-    useEffect(() => {
-        getWeather()
-            .then(forecast => {
-                setWeather(forecast)
-                //console.log(forecast)
-            })
-    }, []);
 
     return (
         <>

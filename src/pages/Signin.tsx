@@ -5,13 +5,16 @@ import ButtonSubmit from "../components/ButtonSubmit.tsx";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
+import useWeather from "../hooks/useWeather.tsx";
+
 
 const signinSchema = z.object({
-    email: z.email({ pattern: z.regexes.html5Email }),
+    email: z.email({pattern: z.regexes.html5Email}),
     password: z.string().min(8, "Invalid password, minimum 8 characters"),
 });
 
-export default function Signin({weather, onSubmit}) {
+export default function Signin() {
+    const {weather} = useWeather();
 
     const {
         register,
@@ -23,7 +26,7 @@ export default function Signin({weather, onSubmit}) {
     });
 
     const onSubmitForm = (data) => {
-        onSubmit(data);
+        console.log("signin data:", data);
         reset();
     };
 
