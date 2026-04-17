@@ -6,6 +6,10 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import useWeather from "../hooks/useWeather.tsx";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+
 
 const signupSchema = z.object({
     name: z.string().min(2, "Enter a name"),
@@ -24,9 +28,32 @@ export default function Signup({onClick}) {
         resolver: zodResolver(signupSchema),
     });
 
-    const onSubmitForm = (data) => {
-        console.log("signup data:", data);
-        reset();
+    // const onSubmitForm = (data) => {
+    //     console.log("signup data:", data);
+    //     reset();
+    // };
+
+    const onSubmitForm = async (data) => {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                data.email,
+                data.password
+            );
+
+            const user = userCredential.user;
+
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                email: user.email,
+                createdAt: new Date().toISOString(),
+            });
+
+            console.log("registered user:", user);
+            reset();
+        } catch (error: any) {
+            console.error("Registration error:", error.message);
+        }
     };
 
     return (

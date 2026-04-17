@@ -6,7 +6,8 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import useWeather from "../hooks/useWeather.tsx";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const signinSchema = z.object({
     email: z.email({pattern: z.regexes.html5Email}),
@@ -25,9 +26,25 @@ export default function Signin() {
         resolver: zodResolver(signinSchema),
     });
 
-    const onSubmitForm = (data) => {
-        console.log("signin data:", data);
-        reset();
+    // const onSubmitForm = (data) => {
+    //     console.log("signin data:", data);
+    //     reset();
+    // };
+
+    const onSubmitForm = async (data) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                data.email,
+                data.password
+            );
+
+            console.log("user:", userCredential.user);
+
+            reset();
+        } catch (error) {
+            console.error("Login error:", error.message);
+        }
     };
 
     return (
