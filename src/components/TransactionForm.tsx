@@ -5,6 +5,8 @@ import {useForm} from "react-hook-form"
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import clsx from "clsx";
+import {auth, db} from "../firebase";
+import {collection, addDoc} from "firebase/firestore";
 
 
 const transactionSchema = z.object({
@@ -13,9 +15,7 @@ const transactionSchema = z.object({
     description: z.string().min(3, "Minimum 3 characters"),
 });
 
-function TransactionForm({onSubmit}) {
-    // const { register, handleSubmit, reset } = useForm();
-
+function TransactionForm() {
     const {
         register,
         handleSubmit,
@@ -25,12 +25,23 @@ function TransactionForm({onSubmit}) {
         resolver: zodResolver(transactionSchema),
     });
 
+    const onSubmitForm = async (data) => {
+        try {
 
-    const onSubmitForm = (data) => {
-        onSubmit(data);
-        reset();
+            const docRef = await addDoc(collection(db, "transactions"), {
+                firebaseId: auth.currentUser?.uid,
+                title: data.title,
+                amount: data.amount,
+                description: data.description,
+                createdAt: new Date().toISOString(),
+            })
+
+            console.log("registered user:", docRef.id);
+            reset();
+        } catch (error: any) {
+            console.error("Registration error:", error.message);
+        }
     };
-
 
     return (
 
@@ -44,7 +55,7 @@ function TransactionForm({onSubmit}) {
                         inputType="title"
                         name="title"
                         label="Title"
-                        className={errors.title ? "border-red-500" : '' }
+                        className={errors.title ? "border-red-500" : ''}
                         register={register}
                     />
                     {errors.title && <p className="error-input absolute">{errors.title.message}</p>}
@@ -53,7 +64,7 @@ function TransactionForm({onSubmit}) {
                         inputType="number"
                         name="amount"
                         label="Amount"
-                        className={errors.amount ? "border-red-500" : '' }
+                        className={errors.amount ? "border-red-500" : ''}
                         register={register}
                     />
                     {errors.amount && <p className="error-input absolute">{errors.amount.message}</p>}
@@ -67,7 +78,8 @@ function TransactionForm({onSubmit}) {
                             className={clsx(errors.description ? "border-red-500" : '', 'w-full rounded-2xl border border-gray-200 bg-slate-100 px-5 py-4 md:text-xl outline-none max-h-[200px]')}
                         ></textarea>
                     </div>
-                    {errors.description && <p className="error-input error-input-textarea absolute">{errors.description.message}</p>}
+                    {errors.description &&
+                        <p className="error-input error-input-textarea absolute">{errors.description.message}</p>}
 
                     <ButtonSubmit title='Save Transaction' id="submit" type="submit"/>
 
