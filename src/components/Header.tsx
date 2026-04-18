@@ -2,15 +2,17 @@ import {useState} from 'react'
 import clsx from 'clsx'
 import appLogo from '../assets/logo.svg'
 import WeatherWidget from "./WeatherWidget.tsx";
+import { Link } from "react-router";
+
 
 function Header({weather}) {
     const [open, setOpen] = useState(false);
     return (
 
         <>
-            <header id="header" className="header p-4  bg-white border-b border-b-gray-300 ">
+            <header id="header" className="header p-4  bg-white border-b border-b-gray-300">
                 <div className="container mx-auto flex justify-between gap-4">
-                    <a className="header-logo flex min-w-max">
+                    <a className="header-logo flex min-w-max" href="/">
                         <img src={appLogo} className="logo min-w-10" alt="Logo"/>
                     </a>
                     <nav
@@ -20,20 +22,11 @@ function Header({weather}) {
                         <ul className="header-menu flex gap-6 md:gap-2 flex-col md:flex-row md:items-center text-slate-600 bg-white w-[300px] md:w-full h-full p-8 md:p-0 md:justify-end "
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <li className="header-menu-item current">
-                                <a href="#" className="p-2 font-medium header-menu-link">Overview</a>
+                            <li className="header-menu-item">
+                                <Link to="/signin" className="p-2 font-medium header-menu-link">SignIn</Link>
                             </li>
                             <li className="header-menu-item">
-                                <a href="#" className="p-2 font-medium header-menu-link">Transactions</a>
-                            </li>
-                            <li className="header-menu-item">
-                                <a href="#"  className="p-2 font-medium header-menu-link">Analytics</a>
-                            </li>
-                            <li className="header-menu-item">
-                                <a href="#" className="p-2 font-medium header-menu-link">Accounts</a>
-                            </li>
-                            <li className="header-menu-item">
-                                <a href="#"  className="p-2 font-medium header-menu-link">Wallet</a>
+                                <Link to="/signup" className="p-2 font-medium header-menu-link">SignUp</Link>
                             </li>
                         </ul>
                     </nav>
