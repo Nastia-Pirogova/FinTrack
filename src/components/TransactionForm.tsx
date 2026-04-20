@@ -29,7 +29,7 @@ function TransactionForm() {
         try {
 
             const docRef = await addDoc(collection(db, "transactions"), {
-                firebaseId: auth.currentUser?.uid,
+                userId: auth.currentUser?.uid,
                 title: data.title,
                 amount: data.amount,
                 description: data.description,
