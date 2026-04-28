@@ -1,6 +1,8 @@
 import TransactionsListItem from './TransactionsListItem.tsx'
+import Input from "./Input.tsx";
 
-function TransactionsList({transactions, onDelete}) {
+
+function TransactionsList({transactions, onDelete, onOpenModal, editItem}) {
 
     return (
         <>
@@ -24,14 +26,20 @@ function TransactionsList({transactions, onDelete}) {
                             <th className="px-8 py-4 font-medium">Description</th>
                             <th className="px-8 py-4 font-medium">Date</th>
                             <th className="px-8 py-4 font-medium">Amount</th>
-                            <th className="px-8 py-4 font-medium"></th>
+                            <th className="px-8 py-4 font-medium">Delete</th>
+                            <th className="px-8 py-4 font-medium">Edit</th>
                         </tr>
                         </thead>
 
                         <tbody className="text-lg text-slate-700">
 
-                        {transactions.map((item ) => (
-                            <TransactionsListItem key={item.id} item={item} onDelete={() => onDelete(item.id)}/>
+                        {transactions.map((item) => (
+                            <TransactionsListItem
+                                key={item.id} item={item}
+                                onDelete={() => onDelete(item.id)}
+                                onOpenModal={onOpenModal}
+                                editItem={() => editItem(item.id)}
+                            />
                         ))}
 
                         </tbody>

@@ -8,13 +8,14 @@ import {useForm} from "react-hook-form";
 import useWeather from "../hooks/useWeather.tsx";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import {Link} from "react-router-dom";
 
 const signinSchema = z.object({
     email: z.email({pattern: z.regexes.html5Email}),
     password: z.string().min(8, "Invalid password, minimum 8 characters"),
 });
 
-export default function Signin() {
+export default function SignIn() {
     const {weather} = useWeather();
 
     const {
@@ -78,6 +79,7 @@ export default function Signin() {
                             {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
 
                             <ButtonSubmit title="Sign In" id="signin" type="submit" className={'mt-3.5'}/>
+                            <p className='mt-4 text-center text-gray-500'>Don't have an account? <Link to="/signup" className="text-blue-600 font-medium">Sign up</Link></p>
                         </form>
                     </div>
                 </section>

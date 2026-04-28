@@ -17,7 +17,7 @@ const signupSchema = z.object({
     password: z.string().min(8, "Invalid password, minimum 8 characters"),
 });
 
-export default function Signup({onClick}) {
+export default function SignUp({onClick}) {
     const {weather} = useWeather();
     const {
         register,
@@ -98,7 +98,7 @@ export default function Signup({onClick}) {
                                 className={errors.password ? "border-red-500" : ''}
                             />
                             {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
-                            <ButtonSubmit title="Sign In" id="signin" onClick={onClick} className={'mt-3.5'}/>
+                            <ButtonSubmit title="Sign Up" id="signup" onClick={onClick} className={'mt-3.5'}/>
                         </form>
                     </div>
                 </section>

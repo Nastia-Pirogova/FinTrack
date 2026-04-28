@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {collection, onSnapshot, doc, deleteDoc, addDoc} from "firebase/firestore";
+import {collection, onSnapshot, doc, deleteDoc, addDoc, updateDoc} from "firebase/firestore";
 import {db} from "../firebase";
 
 
@@ -33,10 +33,16 @@ function useTransactions() {
         return  deleteDoc(doc(db, "transactions", id));
     };
 
+    const editItem = async (id, value) => {
+        return updateDoc(doc(db, "transactions", id), value);
+    };
+
     return {
         transactions,
         addItem,
-        deleteItem
+        deleteItem,
+        editItem,
+
     }
 }
 
