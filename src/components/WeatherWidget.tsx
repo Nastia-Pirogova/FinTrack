@@ -7,7 +7,7 @@ function WeatherWidget({weather}) {
             {/*{console.log(forecastWeather)}*/}
 
             <div
-                className="z-50 flex items-center justify-center bg-blue-600 px-2 lg:px-4 py-2 rounded-l-[8px] lg:rounded-xl min-w-max gap-4 text-white fixed lg:relative lg:top-auto lg:right-auto right-0 top-[140px]">
+                className="z-50 ml-auto flex items-center justify-center bg-blue-600 px-2 lg:px-4 py-2 rounded-l-[8px] lg:rounded-xl min-w-max gap-4 text-white fixed lg:relative lg:top-auto lg:right-auto right-0 top-[140px]">
                 <div className="flex items-center gap-3 ">
                     <img
                         src={`https://openweathermap.org/img/wn/${weather?.list[0].weather[0].icon}.png`}
@@ -21,7 +21,7 @@ function WeatherWidget({weather}) {
                     </div>
                 </div>
 
-                <div className=" justify-between text-sm gap-4 hidden lg:flex">
+                <div className=" justify-between text-sm gap-4 hidden xl:flex">
                     {forecastWeather.map((item) => {
                         const itemDate = new Date(item.dt * 1000).toLocaleDateString("uk-UA", {
                             day: "numeric",

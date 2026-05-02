@@ -9,6 +9,7 @@ import useWeather from "../hooks/useWeather.tsx";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import {Link} from "react-router-dom";
+import {useNavigate} from 'react-router-dom';
 
 const signinSchema = z.object({
     email: z.email({pattern: z.regexes.html5Email}),
@@ -17,7 +18,7 @@ const signinSchema = z.object({
 
 export default function SignIn() {
     const {weather} = useWeather();
-
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -41,7 +42,7 @@ export default function SignIn() {
             );
 
             console.log("user:", userCredential.user);
-
+            navigate('/dashboard')
             reset();
         } catch (error) {
             console.error("Login error:", error.message);

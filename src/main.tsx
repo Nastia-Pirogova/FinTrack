@@ -10,18 +10,18 @@ import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
-import useAuth from "../src/hooks/useAuth"
+import useAuth from "./hooks/useAuth"
+import Loading from "./components/Loading";
 
-function AuthenticatedUser() {
-    const user = useAuth();
+function ProtectedRoute({children}) {
+    const {user, loading} = useAuth();
 
-    if (!user) {
-        return <Navigate to="/signin"/>;
+    if (loading) {
+        return <Loading/>;
     }
 
-    return <Dashboard />;
+    return user ? children : <Navigate to="/signin"/>;
 }
-
 
 const router = createBrowserRouter([
     {
@@ -38,8 +38,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/dashboard",
-        element:  <Dashboard />
-        //element:<AuthenticatedUser />,
+        element: (
+            <ProtectedRoute>
+                <Dashboard/>
+            </ProtectedRoute>
+        ),
     },
     {
         path: "/contact",
@@ -51,7 +54,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/profile",
-        //element: isAuthenticated ? <Profile/> : <Navigate to="/signin" replace/>,
+        element: (
+            <ProtectedRoute>
+                <Profile/>
+            </ProtectedRoute>
+        ),
     },
 ]);
 

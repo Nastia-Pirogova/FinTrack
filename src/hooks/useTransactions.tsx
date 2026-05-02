@@ -1,36 +1,41 @@
 import {useEffect, useState} from 'react'
-import {collection, onSnapshot, doc, deleteDoc, addDoc, updateDoc} from "firebase/firestore";
+import {collection, onSnapshot, doc, deleteDoc, addDoc, updateDoc, query, where} from "firebase/firestore";
 import {db} from "../firebase";
+import useAuth from "../hooks/useAuth";
 
 
 function useTransactions() {
     const [transactions, setTransactions] = useState([])
+    const {user} = useAuth();
 
     useEffect(() => {
-        const getTransactions = onSnapshot(
+        if (!user) return;
+
+        const q = query(
             collection(db, "transactions"),
-            (snapshot) => {
-                const data = snapshot.docs.map((doc) => ({
-                    ...doc.data(),
-                    id: doc.id,
-                    date: doc.data().createdAt,
-                }));
-
-                setTransactions(data);
-
-            }
+            where("userId", "==", user.uid)
         );
 
-        return () => getTransactions();
-    }, []);
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const data = snapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+                date: doc.data().createdAt,
+            }));
+
+            setTransactions(data);
+        });
+
+        return () => unsubscribe();
+    }, [user]);
 
 
     const addItem = async (value) => {
-        return  addDoc(collection(db, "transactions"), value);
+        return addDoc(collection(db, "transactions"), value);
     };
 
     const deleteItem = async (id) => {
-        return  deleteDoc(doc(db, "transactions", id));
+        return deleteDoc(doc(db, "transactions", id));
     };
 
     const editItem = async (id, value) => {

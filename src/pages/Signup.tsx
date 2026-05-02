@@ -10,6 +10,7 @@ import {createUserWithEmailAndPassword} from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import {auth, db} from "../firebase";
 import {updateProfile} from "firebase/auth";
+import {useNavigate} from 'react-router-dom';
 
 const signupSchema = z.object({
     name: z.string().min(2, "Enter a name"),
@@ -17,8 +18,9 @@ const signupSchema = z.object({
     password: z.string().min(8, "Invalid password, minimum 8 characters"),
 });
 
-export default function SignUp({onClick}) {
+export default function SignUp() {
     const {weather} = useWeather();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -27,11 +29,6 @@ export default function SignUp({onClick}) {
     } = useForm({
         resolver: zodResolver(signupSchema),
     });
-
-    // const onSubmitForm = (data) => {
-    //     console.log("signup data:", data);
-    //     reset();
-    // };
 
     const onSubmitForm = async (data) => {
         try {
@@ -55,7 +52,9 @@ export default function SignUp({onClick}) {
             });
 
             console.log("registered user:", user);
+
             reset();
+            navigate('/dashboard')
         } catch (error: any) {
             console.error("Registration error:", error.message);
         }
@@ -98,7 +97,7 @@ export default function SignUp({onClick}) {
                                 className={errors.password ? "border-red-500" : ''}
                             />
                             {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
-                            <ButtonSubmit title="Sign Up" id="signup" onClick={onClick} className={'mt-3.5'}/>
+                            <ButtonSubmit title="Sign Up" id="signup" className={'mt-3.5'}/>
                         </form>
                     </div>
                 </section>
