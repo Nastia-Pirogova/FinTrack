@@ -2,11 +2,14 @@ import {useState} from 'react'
 import clsx from 'clsx'
 import appLogo from '../assets/logo.svg'
 import WeatherWidget from "./WeatherWidget.tsx";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import HeaderUser from "../components/HeaderUser.tsx";
+import useAuth from "../hooks/useAuth";
 
 function Header({weather}) {
     const [open, setOpen] = useState(false);
+    const { user, loading } = useAuth();
+    const isAuthenticated = Boolean(user);
     return (
 
         <>
@@ -34,21 +37,23 @@ function Header({weather}) {
                         </ul>
                     </nav>
 
-                    <div className="header-buttons  flex gap-2 order-4 w-full md:w-auto md:order-2">
-                        <Link
-                            to="/signin"
-                            className="py-4 px-4 font-medium header-menu-link inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white flex-1 md:flex-none md:px-6 text-slate-900 transition hover:bg-slate-50 shrink-0 space-nowrap"
-                        >
-                            Sign In
-                        </Link>
+                    {!loading && !isAuthenticated && (
+                        <div className="header-buttons flex gap-2 order-4 w-full md:w-auto md:order-2">
+                            <Link
+                                to="/signin"
+                                className="py-4 px-4 font-medium header-menu-link inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white flex-1 md:flex-none md:px-6 text-slate-900 transition hover:bg-slate-50 shrink-0 space-nowrap"
+                            >
+                                Sign In
+                            </Link>
 
-                        <Link
-                            to="/signup"
-                            className="py-4 px-4 font-medium header-menu-link inline-flex items-center justify-center rounded-lg text-white bg-blue-600 flex-1 md:flex-none md:px-6 shrink-0 space-nowrap"
-                        >
-                            Sign up
-                        </Link>
-                    </div>
+                            <Link
+                                to="/signup"
+                                className="py-4 px-4 font-medium header-menu-link inline-flex items-center justify-center rounded-lg text-white bg-blue-600 flex-1 md:flex-none md:px-6 shrink-0 space-nowrap"
+                            >
+                                Sign up
+                            </Link>
+                        </div>
+                    )}
 
                     <WeatherWidget weather={weather}/>
                     <HeaderUser/>

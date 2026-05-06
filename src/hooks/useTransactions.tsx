@@ -1,22 +1,30 @@
 import {useEffect, useState} from 'react'
-import {collection, onSnapshot, doc, deleteDoc, addDoc, updateDoc, query, where} from "firebase/firestore";
+import {
+    collection,
+    onSnapshot,
+    doc,
+    deleteDoc,
+    addDoc,
+    updateDoc,
+} from "firebase/firestore";
 import {db} from "../firebase";
 import useAuth from "../hooks/useAuth";
 
-
 function useTransactions() {
-    const [transactions, setTransactions] = useState([])
+    const [transactions, setTransactions] = useState([]);
     const {user} = useAuth();
 
+    const transactionsRef = user
+        ? collection(db, "users", user.uid, "transactions")
+        : null;
+
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            setTransactions([]);
+            return;
+        }
 
-        const q = query(
-            collection(db, "transactions"),
-            where("userId", "==", user.uid)
-        );
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
+        const unsubscribe = onSnapshot(transactionsRef, (snapshot) => {
             const data = snapshot.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id,
@@ -29,17 +37,30 @@ function useTransactions() {
         return () => unsubscribe();
     }, [user]);
 
-
     const addItem = async (value) => {
-        return addDoc(collection(db, "transactions"), value);
+        if (!user) return;
+
+        return addDoc(
+            collection(db, "users", user.uid, "transactions"),
+            value
+        );
     };
 
     const deleteItem = async (id) => {
-        return deleteDoc(doc(db, "transactions", id));
+        if (!user) return;
+
+        return deleteDoc(
+            doc(db, "users", user.uid, "transactions", id)
+        );
     };
 
     const editItem = async (id, value) => {
-        return updateDoc(doc(db, "transactions", id), value);
+        if (!user) return;
+
+        return updateDoc(
+            doc(db, "users", user.uid, "transactions", id),
+            value
+        );
     };
 
     return {
@@ -47,8 +68,7 @@ function useTransactions() {
         addItem,
         deleteItem,
         editItem,
-
-    }
+    };
 }
 
-export default useTransactions
+export default useTransactions;

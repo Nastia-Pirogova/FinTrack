@@ -11,6 +11,7 @@ import {doc, setDoc} from "firebase/firestore";
 import {auth, db} from "../firebase";
 import {updateProfile} from "firebase/auth";
 import {useNavigate} from 'react-router-dom';
+import {useState} from "react";
 
 const signupSchema = z.object({
     name: z.string().min(2, "Enter a name"),
@@ -20,6 +21,7 @@ const signupSchema = z.object({
 
 export default function SignUp() {
     const {weather} = useWeather();
+    const [firebaseError, setFirebaseError] = useState("");
     const navigate = useNavigate();
     const {
         register,
@@ -32,6 +34,8 @@ export default function SignUp() {
 
     const onSubmitForm = async (data) => {
         try {
+            setFirebaseError("");
+
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 data.email,
@@ -46,16 +50,20 @@ export default function SignUp() {
 
             await setDoc(doc(db, "users", user.uid), {
                 firebaseId: user.uid,
-                name: user.displayName,
+                name: data.name,
                 email: user.email,
                 createdAt: new Date().toISOString(),
             });
 
-            console.log("registered user:", user);
-
             reset();
-            navigate('/dashboard')
+            navigate('/dashboard');
         } catch (error: any) {
+            if (error.code === "auth/email-already-in-use") {
+                setFirebaseError("This email is already registered. Please sign in instead.");
+            } else {
+                setFirebaseError("Registration failed. Please try again.");
+            }
+
             console.error("Registration error:", error.message);
         }
     };
@@ -97,6 +105,11 @@ export default function SignUp() {
                                 className={errors.password ? "border-red-500" : ''}
                             />
                             {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
+                            {firebaseError && (
+                                <p className="mb-4 text-sm text-red-500">
+                                    {firebaseError}
+                                </p>
+                            )}
                             <ButtonSubmit title="Sign Up" id="signup" className={'mt-3.5'}/>
                         </form>
                     </div>
