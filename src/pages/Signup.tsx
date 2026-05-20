@@ -10,6 +10,8 @@ import {createUserWithEmailAndPassword} from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import {auth, db} from "../firebase";
 import {updateProfile} from "firebase/auth";
+import {useNavigate} from 'react-router-dom';
+import {useState} from "react";
 
 const signupSchema = z.object({
     name: z.string().min(2, "Enter a name"),
@@ -17,8 +19,10 @@ const signupSchema = z.object({
     password: z.string().min(8, "Invalid password, minimum 8 characters"),
 });
 
-export default function Signup({onClick}) {
+export default function SignUp() {
     const {weather} = useWeather();
+    const [firebaseError, setFirebaseError] = useState("");
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -28,13 +32,10 @@ export default function Signup({onClick}) {
         resolver: zodResolver(signupSchema),
     });
 
-    // const onSubmitForm = (data) => {
-    //     console.log("signup data:", data);
-    //     reset();
-    // };
-
     const onSubmitForm = async (data) => {
         try {
+            setFirebaseError("");
+
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 data.email,
@@ -49,14 +50,20 @@ export default function Signup({onClick}) {
 
             await setDoc(doc(db, "users", user.uid), {
                 firebaseId: user.uid,
-                name: user.displayName,
+                name: data.name,
                 email: user.email,
                 createdAt: new Date().toISOString(),
             });
 
-            console.log("registered user:", user);
             reset();
+            navigate('/dashboard');
         } catch (error: any) {
+            if (error.code === "auth/email-already-in-use") {
+                setFirebaseError("This email is already registered. Please sign in instead.");
+            } else {
+                setFirebaseError("Registration failed. Please try again.");
+            }
+
             console.error("Registration error:", error.message);
         }
     };
@@ -98,7 +105,12 @@ export default function Signup({onClick}) {
                                 className={errors.password ? "border-red-500" : ''}
                             />
                             {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
-                            <ButtonSubmit title="Sign In" id="signin" onClick={onClick} className={'mt-3.5'}/>
+                            {firebaseError && (
+                                <p className="mb-4 text-sm text-red-500">
+                                    {firebaseError}
+                                </p>
+                            )}
+                            <ButtonSubmit title="Sign Up" id="signup" className={'mt-3.5'}/>
                         </form>
                     </div>
                 </section>

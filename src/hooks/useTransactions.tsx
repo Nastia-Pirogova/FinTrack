@@ -1,43 +1,74 @@
 import {useEffect, useState} from 'react'
-import {collection, onSnapshot, doc, deleteDoc, addDoc} from "firebase/firestore";
+import {
+    collection,
+    onSnapshot,
+    doc,
+    deleteDoc,
+    addDoc,
+    updateDoc,
+} from "firebase/firestore";
 import {db} from "../firebase";
-
+import useAuth from "../hooks/useAuth";
 
 function useTransactions() {
-    const [transactions, setTransactions] = useState([])
+    const [transactions, setTransactions] = useState([]);
+    const {user} = useAuth();
+
+    const transactionsRef = user
+        ? collection(db, "users", user.uid, "transactions")
+        : null;
 
     useEffect(() => {
-        const getTransactions = onSnapshot(
-            collection(db, "transactions"),
-            (snapshot) => {
-                const data = snapshot.docs.map((doc) => ({
-                    ...doc.data(),
-                    id: doc.id,
-                    date: doc.data().createdAt,
-                }));
+        if (!user) {
+            setTransactions([]);
+            return;
+        }
 
-                setTransactions(data);
+        const unsubscribe = onSnapshot(transactionsRef, (snapshot) => {
+            const data = snapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+                date: doc.data().createdAt,
+            }));
 
-            }
-        );
+            setTransactions(data);
+        });
 
-        return () => getTransactions();
-    }, []);
-
+        return () => unsubscribe();
+    }, [user]);
 
     const addItem = async (value) => {
-        return  addDoc(collection(db, "transactions"), value);
+        if (!user) return;
+
+        return addDoc(
+            collection(db, "users", user.uid, "transactions"),
+            value
+        );
     };
 
     const deleteItem = async (id) => {
-        return  deleteDoc(doc(db, "transactions", id));
+        if (!user) return;
+
+        return deleteDoc(
+            doc(db, "users", user.uid, "transactions", id)
+        );
+    };
+
+    const editItem = async (id, value) => {
+        if (!user) return;
+
+        return updateDoc(
+            doc(db, "users", user.uid, "transactions", id),
+            value
+        );
     };
 
     return {
         transactions,
         addItem,
-        deleteItem
-    }
+        deleteItem,
+        editItem,
+    };
 }
 
-export default useTransactions
+export default useTransactions;

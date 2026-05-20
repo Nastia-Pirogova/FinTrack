@@ -8,7 +8,6 @@ import clsx from "clsx";
 import {auth, db} from "../firebase";
 import {collection, addDoc} from "firebase/firestore";
 
-
 const transactionSchema = z.object({
     title: z.string().min(1, "Enter a title"),
     amount: z.coerce.number().positive("Amount must be greater than 0"),
@@ -27,19 +26,27 @@ function TransactionForm() {
 
     const onSubmitForm = async (data) => {
         try {
+            const user = auth.currentUser;
 
-            const docRef = await addDoc(collection(db, "transactions"), {
-                userId: auth.currentUser?.uid,
-                title: data.title,
-                amount: data.amount,
-                description: data.description,
-                createdAt: new Date().toISOString(),
-            })
+            if (!user) {
+                console.error("User is not authenticated");
+                return;
+            }
 
-            console.log("registered user:", docRef.id);
+            const docRef = await addDoc(
+                collection(db, "users", user.uid, "transactions"),
+                {
+                    title: data.title,
+                    amount: data.amount,
+                    description: data.description,
+                    createdAt: new Date().toISOString(),
+                }
+            );
+
+            console.log("created transaction:", docRef.id);
             reset();
         } catch (error: any) {
-            console.error("Registration error:", error.message);
+            console.error("Transaction error:", error.message);
         }
     };
 
