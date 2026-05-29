@@ -5,37 +5,35 @@ import useTransactions from "../hooks/useTransactions.tsx";
 import StatsCards from "../components/StatsCards.tsx";
 import TransactionForm from "../components/TransactionForm.tsx";
 import TransactionsList from "../components/TransactionsList.tsx";
-import Modal from "../components/Modal.tsx";
-import useModalTransaction from "../hooks/useModalTransaction.tsx";
-
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal.tsx";
+import useModalDeleteTransaction from "../hooks/useModalDeleteTransaction.tsx";
 
 export default function Dashboard() {
     const {weather} = useWeather();
-    const {transactions, deleteItem, addItem, editItem} = useTransactions()
+    const {transactions, deleteItem, addItem} = useTransactions()
 
-    const modal = useModalTransaction();
+    const modalConfirmDelete = useModalDeleteTransaction(deleteItem);
 
     return (
         <>
             <Header weather={weather}/>
             <main>
-                <StatsCards/>
+                <StatsCards transactions={transactions}/>
                 <section id="transaction" className="transaction px-4 mb-4">
                     <div className="container mx-auto grid gap-8 xl:grid-cols-[1fr_2fr] grid-cols-1  justify-between">
                         <TransactionForm onSubmit={addItem}/>
                         <TransactionsList
                             transactions={transactions}
-                            onDelete={deleteItem}
-                            onOpenModal={modal.openModal}
+                            onDelete={modalConfirmDelete.openModal}
                         />
                     </div>
                 </section>
-                <Modal
-                       isOpen={modal.isOpen}
-                       onClose={modal.closeModal}
-                       data={modal.selected}
-                       editItem={editItem}
+                <ConfirmDeleteModal
+                    isOpen={modalConfirmDelete.isOpen}
+                    onClose={modalConfirmDelete.closeModal}
+                    onConfirm={modalConfirmDelete.confirmDelete}
                 />
+
             </main>
             <Footer/>
         </>

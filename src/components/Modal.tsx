@@ -2,6 +2,7 @@ import Input from "./Input.tsx";
 import Button from "./Button.tsx";
 import clsx from "clsx";
 import {useState, useEffect} from "react";
+import {createPortal} from 'react-dom';
 
 function Modal({isOpen, onClose, data, editItem}) {
     const [form, setForm] = useState({
@@ -30,7 +31,7 @@ function Modal({isOpen, onClose, data, editItem}) {
         onClose();
     };
 
-    return (
+    return createPortal(
         <>
             {isOpen && (
                 <div
@@ -93,7 +94,7 @@ function Modal({isOpen, onClose, data, editItem}) {
                     </div>
                 </div>
             )}
-        </>
+        </>, document.body
     )
 }
 

@@ -1,20 +1,41 @@
 import TransactionsListItem from './TransactionsListItem.tsx'
 import Input from "./Input.tsx";
+import {useEffect, useState} from "react";
+import {useSearchParams} from "react-router-dom"
 
+function TransactionsList({transactions, onDelete}) {
+    const [searchParams, setSearchParams] = useSearchParams();
 
-function TransactionsList({transactions, onDelete, onOpenModal, editItem}) {
+    const filtered = transactions.filter(item =>
+        item.title.toLowerCase().includes(searchParams.get("search") || ''.toLowerCase())
+    )
 
     return (
         <>
             <div className="border border-gray-200 bg-white shadow-xs rounded-xl">
 
-                <div className="border-b border-gray-200 px-8 py-6">
-                    <h2 className="text-2xl font-semibold text-slate-700">
-                        Last transactions
-                    </h2>
-                    <p className="mt-2 text-lg text-slate-500">
-                        Check your last transactions
-                    </p>
+                <div className="border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+                    <div>
+                        <h2 className="text-2xl font-semibold text-slate-700">
+                            Last transactions
+                        </h2>
+                        <p className="mt-2 text-lg text-slate-500">
+                            Check your last transactions
+                        </p>
+                    </div>
+
+                    <Input
+                        id="search"
+                        inputType="text"
+                        name="search"
+                        placeholder="Search transaction..."
+                        label="Search"
+                        className='search'
+                        value={searchParams.get("search") || ""}
+                        onChange={(e) => {
+                            setSearchParams({search: e.target.value})
+                        }}
+                    />
                 </div>
 
                 <div className="table-transaction overflow-x-auto block">
@@ -33,12 +54,11 @@ function TransactionsList({transactions, onDelete, onOpenModal, editItem}) {
 
                         <tbody className="text-lg text-slate-700">
 
-                        {transactions.map((item) => (
+                        {filtered.map((item) => (
                             <TransactionsListItem
-                                key={item.id} item={item}
+                                key={item.id}
+                                item={item}
                                 onDelete={() => onDelete(item.id)}
-                                onOpenModal={onOpenModal}
-                                editItem={() => editItem(item.id)}
                             />
                         ))}
 

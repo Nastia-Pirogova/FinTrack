@@ -1,7 +1,9 @@
 //import {useState} from 'react'
 
-function StatsCards() {
-
+function StatsCards({transactions}) {
+    const totalExpenses = transactions.reduce((acc, item) => {
+        return acc + Number(item.amount);
+    }, 0);
     return (
         <>
             <section id="stats-cards" className="stats-cards px-4 mt-8 mb-6">
@@ -14,10 +16,12 @@ function StatsCards() {
                         <p className="stats-cards-title text-slate-500 mb-2">Incomes</p>
                         <div className="stats-cards-amount text-3xl md:text-4xl font-semibold text-slate-600">$9,450.00</div>
                     </li>
+
                     <li className="stats-cards-item bg-white border text-sm border-gray-200 p-4 md:p-6 rounded-xl flex-1 shadow-xs">
                         <p className="stats-cards-title text-slate-500 mb-2">Expenses</p>
-                        <div className="stats-cards-amount text-3xl md:text-4xl font-semibold text-slate-600">$3,945.55</div>
+                        <div className="stats-cards-amount text-3xl md:text-4xl font-semibold text-slate-600">${totalExpenses}</div>
                     </li>
+
                 </ul>
             </section>
         </>

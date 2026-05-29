@@ -43,7 +43,7 @@ function TransactionForm() {
                 }
             );
 
-            console.log("created transaction:", docRef.id);
+            // console.log("created transaction:", docRef.id);
             reset();
         } catch (error: any) {
             console.error("Transaction error:", error.message);

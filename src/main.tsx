@@ -12,6 +12,7 @@ import About from "./pages/About";
 import Profile from "./pages/Profile";
 import useAuth from "./hooks/useAuth"
 import Loading from "./components/Loading";
+import TransactionPage from "./pages/TransactionPage";
 
 function ProtectedRoute({children}) {
     const {user, loading} = useAuth();
@@ -43,7 +44,13 @@ const router = createBrowserRouter([
                 <Dashboard/>
             </ProtectedRoute>
         ),
+
     },
+    {
+        path: "/dashboard/transactions/:id",
+        element: <TransactionPage />,
+    },
+
     {
         path: "/contact",
         element: <Contact/>,
