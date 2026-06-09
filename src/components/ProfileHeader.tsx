@@ -5,7 +5,8 @@ import { doc, getDoc, updateDoc} from "firebase/firestore";
 import {db} from "../firebase";
 import Input from "./Input.tsx";
 import {getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
-
+import IconEdit from '../assets/svg/IconEdit.tsx'
+import Success from '../assets/svg/Success.tsx'
 
 function ProfileHeader({}) {
     const {user, loading} = useAuth();
@@ -33,7 +34,6 @@ function ProfileHeader({}) {
 
     if (loading) return null;
     if (!user) return null;
-
 
     async function handleSaveName(name) {
         const profileName = name.trim()
@@ -103,7 +103,6 @@ function ProfileHeader({}) {
 
                         <div>
                             <h2 className="profile-name text-xl font-semibold text-gray-900 flex gap-2.5">
-
                                 {isEditing ? (
                                     <div className="flex items-center gap-2">
                                         <input
@@ -113,12 +112,7 @@ function ProfileHeader({}) {
                                         />
 
                                         <button className="profile-name-edit" onClick={() => handleSaveName(name)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                      d="m4.5 12.75 6 6 9-13.5"/>
-                                            </svg>
-
+                                            <Success />
                                         </button>
                                     </div>
                                 ) : (
@@ -127,16 +121,10 @@ function ProfileHeader({}) {
                                         {profile?.name || user.displayName || "User"}
                                     </span>
                                         <button className="profile-name-edit" onClick={() => setIsEditing(true)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 strokeWidth={1.5} stroke="currentColor" className="size-5">
-                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                                            </svg>
+                                            <IconEdit />
                                         </button>
                                     </div>
                                 )}
-
-
                             </h2>
                             <p className="text-sm text-gray-500">
                                 {profile?.email || user.email || "Email"}

@@ -1,6 +1,5 @@
 import TransactionsListItem from './TransactionsListItem.tsx'
 import Input from "./Input.tsx";
-import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom"
 
 function TransactionsList({transactions, onDelete}) {
@@ -14,7 +13,8 @@ function TransactionsList({transactions, onDelete}) {
         <>
             <div className="border border-gray-200 bg-white shadow-xs rounded-xl">
 
-                <div className="border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+                <div
+                    className="border-b border-gray-200 px-8 py-6 flex gap-4 justify-between flex-col md:flex-row md:items-center">
                     <div>
                         <h2 className="text-2xl font-semibold text-slate-700">
                             Last transactions

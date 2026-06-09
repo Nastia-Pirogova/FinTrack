@@ -10,7 +10,7 @@ import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from "../firebase";
 import {Link} from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
-import {GoogleAuthProvider, signInWithPopup} from "firebase/auth"
+import {signInWithGoogle} from '../services/firebaseService'
 
 const signinSchema = z.object({
     email: z.email({pattern: z.regexes.html5Email}),
@@ -29,11 +29,6 @@ export default function SignIn() {
         resolver: zodResolver(signinSchema),
     });
 
-    // const onSubmitForm = (data) => {
-    //     console.log("signin data:", data);
-    //     reset();
-    // };
-
     const onSubmitForm = async (data) => {
         try {
             const userCredential = await signInWithEmailAndPassword(
@@ -51,14 +46,9 @@ export default function SignIn() {
     };
 
 
-    const handleGoogleSignIn = async (data) => {
-
-        const provider = new GoogleAuthProvider()
+    const handleGoogleSignIn = async () => {
         try {
-
-            await signInWithPopup(auth, provider);
-
-            //console.log("user:", userCredential.user);
+            await signInWithGoogle()
             navigate('/dashboard')
 
         } catch (error) {

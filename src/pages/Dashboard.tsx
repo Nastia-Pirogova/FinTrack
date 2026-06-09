@@ -5,13 +5,13 @@ import useTransactions from "../hooks/useTransactions.tsx";
 import StatsCards from "../components/StatsCards.tsx";
 import TransactionForm from "../components/TransactionForm.tsx";
 import TransactionsList from "../components/TransactionsList.tsx";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal.tsx";
+import Modal from "../components/Modal.tsx";
 import useModalDeleteTransaction from "../hooks/useModalDeleteTransaction.tsx";
+import Button  from "../components/Button";
 
 export default function Dashboard() {
     const {weather} = useWeather();
     const {transactions, deleteItem, addItem} = useTransactions()
-
     const modalConfirmDelete = useModalDeleteTransaction(deleteItem);
 
     return (
@@ -20,7 +20,7 @@ export default function Dashboard() {
             <main>
                 <StatsCards transactions={transactions}/>
                 <section id="transaction" className="transaction px-4 mb-4">
-                    <div className="container mx-auto grid gap-8 xl:grid-cols-[1fr_2fr] grid-cols-1  justify-between">
+                    <div className="container mx-auto grid gap-8 2xl:grid-cols-[1fr_2fr] grid-cols-1  justify-between">
                         <TransactionForm onSubmit={addItem}/>
                         <TransactionsList
                             transactions={transactions}
@@ -28,12 +28,29 @@ export default function Dashboard() {
                         />
                     </div>
                 </section>
-                <ConfirmDeleteModal
-                    isOpen={modalConfirmDelete.isOpen}
-                    onClose={modalConfirmDelete.closeModal}
-                    onConfirm={modalConfirmDelete.confirmDelete}
-                />
+                <Modal isOpen={modalConfirmDelete.isOpen}>
+                    <h2 className="mb-4 text-2xl font-semibold text-slate-700 text-center">
+                        Are you sure you want to delete this transaction?
+                    </h2>
 
+                    <p className="text-center text-slate-600">
+                        This action cannot be undone.
+                    </p>
+
+                    <div className="flex gap-2 mt-8">
+                        <Button
+                            onClick={modalConfirmDelete.confirmDelete}
+                            title="Yes"
+                            className="text-white"
+                        />
+
+                        <Button
+                            onClick={modalConfirmDelete.closeModal}
+                            title="No"
+                            className="border border-slate-300 bg-white md:px-6 text-slate-900 hover:bg-slate-50"
+                        />
+                    </div>
+                </Modal>
             </main>
             <Footer/>
         </>

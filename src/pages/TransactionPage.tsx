@@ -3,16 +3,15 @@ import Footer from "../components/Footer.tsx";
 import useWeather from "../hooks/useWeather.tsx";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {db} from "../firebase";
 import useAuth from "../hooks/useAuth";
 import Loading from "../components/Loading.tsx";
 import Input from "../components/Input.tsx";
 import Button from "../components/Button.tsx";
-import { useNavigate } from "react-router-dom";
-import { updateDoc, doc, getDoc } from "firebase/firestore";
-import ReactQuill from 'react-quill';
-
-
+import {useNavigate} from "react-router-dom";
+import {getTransactionById} from "../services/transactionsService.ts";
+import {saveTransaction} from "../services/saveTransaction.ts";
+import TextEditor from "../components/TextEditor.tsx";
+import {formatDate} from "../services/dateService";
 
 export default function TransactionPage() {
     const {weather} = useWeather();
@@ -34,31 +33,20 @@ export default function TransactionPage() {
         const getTransaction = async () => {
             if (!id || !user) return;
 
-            const docRef = doc(
-                db,
-                "users",
-                user.uid,
-                "transactions",
-                id
-            );
 
-            const docSnap = await getDoc(docRef);
+            const data = await getTransactionById(id, user.uid);
 
-            if (docSnap.exists()) {
-                const data = {
-                    id: docSnap.id,
-                    ...docSnap.data(),
-                };
+            if (!data) return;
 
-                setTransaction(data);
+            setTransaction(data);
 
-                setForm({
-                    title: data.title || "",
-                    amount: data.amount || "",
-                    description: data.description || "",
-                    date: data.createdAt || "",
-                });
-            }
+            setForm({
+                title: data.title || "",
+                amount: data.amount || "",
+                description: data.description || "",
+                date: data.createdAt || "",
+            });
+
         };
 
         getTransaction();
@@ -69,35 +57,16 @@ export default function TransactionPage() {
     }
 
 
-
     const handleSave = async () => {
         if (!id || !user) return;
 
         try {
-            await updateDoc(
-                doc(
-                    db,
-                    "users",
-                    user.uid,
-                    "transactions",
-                    id
-                ),
-                {
-                    title: form.title,
-                    amount: form.amount,
-                    description: form.description,
-                }
-            );
-
+            await saveTransaction(form, user.uid, id);
             navigate("/dashboard");
         } catch (error) {
             console.error(error);
         }
     };
-
-
-
-   // const cleanHtml = sanitizeHml(form.description);
 
 
     return (
@@ -164,11 +133,10 @@ export default function TransactionPage() {
                                     <p className="text-sm font-medium text-slate-400">
                                         Description
                                     </p>
-                                    <p className="mt-2 text-lg text-slate-700">
-                                        <ReactQuill theme="snow" value={form.description}  onChange={(value) =>
-                                            setForm({...form, description: value})
-                                        } />
-                                    </p>
+                                    <div className="mt-2 text-lg text-slate-700">
+                                        <TextEditor value={form.description} onChange={(value) =>
+                                            setForm({...form, description: value})}/>
+                                    </div>
                                 </div>
 
                                 <div className="rounded-xl bg-slate-50 p-5 sm:col-span-2">
@@ -176,9 +144,7 @@ export default function TransactionPage() {
                                         Date
                                     </p>
                                     <p className="mt-2 text-lg font-semibold text-slate-700">
-                                        {form?.date
-                                            ? new Date(form.date).toLocaleDateString()
-                                            : "N/A"}
+                                        {formatDate(form.date)}
                                     </p>
                                 </div>
                             </div>

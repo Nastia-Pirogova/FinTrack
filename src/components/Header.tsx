@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import clsx from 'clsx'
-import appLogo from '../assets/logo.svg'
+import Logo from '../assets/svg/Logo.tsx'
+import Burger from '../assets/svg/Burger.tsx'
 import WeatherWidget from "./WeatherWidget.tsx";
 import {Link} from "react-router-dom";
 import HeaderUser from "../components/HeaderUser.tsx";
@@ -15,8 +16,8 @@ function Header({weather}) {
         <>
             <header id="header" className="header p-4  bg-white border-b border-b-gray-300">
                 <div className="container md:mx-auto w-full flex justify-between gap-4 flex-wrap md:flex-nowrap">
-                    <a className="header-logo flex min-w-max" href="/">
-                        <img src={appLogo} className="logo min-w-10" alt="Logo"/>
+                    <a className="header-logo flex min-w-max items-center" href="/">
+                        <Logo/>
                     </a>
                     <nav
                         className={clsx(open ? "flex" : "hidden", " md:flex items-center bg-black/50 md:bg-transparent fixed md:static top-0 left-0 z-100 w-full md:w-fit max-h-screen h-full md:h-auto")}
@@ -59,11 +60,7 @@ function Header({weather}) {
                     <HeaderUser/>
 
                     <button id="burger" className="header-burger md:hidden" onClick={() => setOpen(!open)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                             stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round"
-                                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
-                        </svg>
+                        <Burger/>
                     </button>
                 </div>
             </header>

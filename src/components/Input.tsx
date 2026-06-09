@@ -4,7 +4,7 @@ export default function Input({inputType, label, id, name, className, register, 
 
     return (
         <>
-            <div className="form-inner mb-4">
+            <div className="form-inner">
                 {label && (
                     <label
                         htmlFor={id}

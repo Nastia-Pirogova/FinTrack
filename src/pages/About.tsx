@@ -2,9 +2,6 @@ import Header from "../components/Header.tsx";
 import Footer from "../components/Footer.tsx";
 import useWeather from "../hooks/useWeather.tsx";
 
-
-
-
 export default function About() {
     const {weather} = useWeather();
     return (

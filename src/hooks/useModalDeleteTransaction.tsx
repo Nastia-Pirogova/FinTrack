@@ -1,32 +1,17 @@
-import { useState } from "react";
+import useModal from "./useModal";
 
 function useModalDeleteTransaction(deleteItem) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState(null);
-
-    const openModal = (item) => {
-        setSelected(item);
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-        setSelected(null);
-    };
+    const modal = useModal();
 
     const confirmDelete = async () => {
-        if (!selected) return;
+        if (!modal.selected) return;
 
-        await deleteItem(selected);
-
-        closeModal();
+        await deleteItem(modal.selected);
+        modal.closeModal();
     };
 
     return {
-        isOpen,
-        selected,
-        openModal,
-        closeModal,
+        ...modal,
         confirmDelete,
     };
 }
