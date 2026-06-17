@@ -1,4 +1,3 @@
-import {useState} from 'react'
 import ButtonSubmit from "./ButtonSubmit.tsx";
 import Input from "./Input.tsx";
 import {useForm} from "react-hook-form"
@@ -43,7 +42,7 @@ function TransactionForm() {
                 }
             );
 
-            console.log("created transaction:", docRef.id);
+            // console.log("created transaction:", docRef.id);
             reset();
         } catch (error: any) {
             console.error("Transaction error:", error.message);
@@ -56,7 +55,7 @@ function TransactionForm() {
             <div className="border border-gray-200 bg-white p-6 shadow-xs rounded-xl">
                 <h2 className="mb-4 md:mb-8 text-2xl font-semibold text-slate-700">Add Transaction</h2>
 
-                <form className="form" onSubmit={handleSubmit(onSubmitForm)}>
+                <form className="form flex  gap-4 flex-col" onSubmit={handleSubmit(onSubmitForm)}>
                     <Input
                         id="title"
                         inputType="title"

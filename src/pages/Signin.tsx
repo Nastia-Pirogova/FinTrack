@@ -6,10 +6,11 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import useWeather from "../hooks/useWeather.tsx";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import {signInWithEmailAndPassword} from "firebase/auth";
+import {auth} from "../firebase";
 import {Link} from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
+import {signInWithGoogle} from '../services/firebaseService'
 
 const signinSchema = z.object({
     email: z.email({pattern: z.regexes.html5Email}),
@@ -28,11 +29,6 @@ export default function SignIn() {
         resolver: zodResolver(signinSchema),
     });
 
-    // const onSubmitForm = (data) => {
-    //     console.log("signin data:", data);
-    //     reset();
-    // };
-
     const onSubmitForm = async (data) => {
         try {
             const userCredential = await signInWithEmailAndPassword(
@@ -44,6 +40,17 @@ export default function SignIn() {
             console.log("user:", userCredential.user);
             navigate('/dashboard')
             reset();
+        } catch (error) {
+            console.error("Login error:", error.message);
+        }
+    };
+
+
+    const handleGoogleSignIn = async () => {
+        try {
+            await signInWithGoogle()
+            navigate('/dashboard')
+
         } catch (error) {
             console.error("Login error:", error.message);
         }
@@ -80,7 +87,13 @@ export default function SignIn() {
                             {errors.password && <p className="error-input absolute">{errors.password.message}</p>}
 
                             <ButtonSubmit title="Sign In" id="signin" type="submit" className={'mt-3.5'}/>
-                            <p className='mt-4 text-center text-gray-500'>Don't have an account? <Link to="/signup" className="text-blue-600 font-medium">Sign up</Link></p>
+                            <p className='text-center py-2'>Or</p>
+                            <ButtonSubmit title="Sign In with Google" id="signin-wuth-google"
+                                          onClick={handleGoogleSignIn} type="button" className={'mt-0'}/>
+
+                            <p className='mt-4 text-center text-gray-500'>Don't have an account? <Link to="/signup"
+                                                                                                       className="text-blue-600 font-medium">Sign
+                                up</Link></p>
                         </form>
                     </div>
                 </section>

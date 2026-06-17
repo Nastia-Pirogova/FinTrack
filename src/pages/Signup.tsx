@@ -6,12 +6,10 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import useWeather from "../hooks/useWeather.tsx";
-import {createUserWithEmailAndPassword} from "firebase/auth";
-import {doc, setDoc} from "firebase/firestore";
-import {auth, db} from "../firebase";
-import {updateProfile} from "firebase/auth";
 import {useNavigate} from 'react-router-dom';
 import {useState} from "react";
+import {ROUTES} from "../constants/routes.ts";
+import {registerUser} from "../services/authService"
 
 const signupSchema = z.object({
     name: z.string().min(2, "Enter a name"),
@@ -35,28 +33,11 @@ export default function SignUp() {
     const onSubmitForm = async (data) => {
         try {
             setFirebaseError("");
-
-            const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                data.email,
-                data.password
-            );
-
-            const user = userCredential.user;
-
-            await updateProfile(user, {
-                displayName: data.name,
-            });
-
-            await setDoc(doc(db, "users", user.uid), {
-                firebaseId: user.uid,
-                name: data.name,
-                email: user.email,
-                createdAt: new Date().toISOString(),
-            });
+            await registerUser(data)
 
             reset();
-            navigate('/dashboard');
+            navigate(ROUTES.DASHBOARD)
+
         } catch (error: any) {
             if (error.code === "auth/email-already-in-use") {
                 setFirebaseError("This email is already registered. Please sign in instead.");
