@@ -1,11 +1,10 @@
 import StatCardItem from './StatCardItem.tsx'
-import {useMemo, useState} from "react";
+import {useState} from "react";
 import Success from "../assets/svg/Success.tsx";
 import IconEdit from "../assets/svg/IconEdit.tsx";
-import clsx from "clsx";
 
 
-function StatsCards({transactions}) {
+const StatsCards = ({transactions}) => {
     const totalExpenses = transactions.reduce((acc, item) => {
         return acc + Number(item.amount);
     }, 0);
@@ -14,14 +13,15 @@ function StatsCards({transactions}) {
     const [incomeValue, setIncomeValue] = useState("");
     const [incomes, setIncomes] = useState(0);
 
-     function handleSaveIncomes() {
 
-        setIncomes(Number(incomeValue));
+    const handleSaveIncomes = () => {
+
+        setIncomes(+incomeValue);
 
         setIsEditingIncome(false)
     }
 
-    const balance =  incomes - totalExpenses;
+    const balance = incomes - totalExpenses;
 
 
     return (
@@ -49,7 +49,7 @@ function StatsCards({transactions}) {
                                 />
 
                                 <button className="profile-name-edit" onClick={handleSaveIncomes}>
-                                    <Success />
+                                    <Success/>
                                 </button>
                             </div>
                         </li>
@@ -62,15 +62,15 @@ function StatsCards({transactions}) {
                             </span>
 
                             <button onClick={() => setIsEditingIncome(true)}>
-                                <IconEdit />
+                                <IconEdit/>
                             </button>
                         </li>
                     )}
 
                     <StatCardItem
-                    title="Expenses"
-                    amount={totalExpenses}
-                    className='text-slate-600'
+                        title="Expenses"
+                        amount={totalExpenses}
+                        className='text-slate-600'
                     />
                 </ul>
             </section>
